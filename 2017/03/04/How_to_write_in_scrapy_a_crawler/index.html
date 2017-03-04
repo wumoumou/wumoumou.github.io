@@ -1,0 +1,707 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="python,scrapy," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="主要记录用scrapy写一个爬虫的步骤，以及这个框架要怎样使用。最近记性越来越差了。。。
+
+一、初始化一个爬虫1、安装scrapy1pip install scrapy">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何用scrapy写一个爬虫">
+<meta property="og:url" content="http://wumoumou.github.io/2017/03/04/How_to_write_in_scrapy_a_crawler/index.html">
+<meta property="og:site_name" content="wumoumou's blog">
+<meta property="og:description" content="主要记录用scrapy写一个爬虫的步骤，以及这个框架要怎样使用。最近记性越来越差了。。。
+
+一、初始化一个爬虫1、安装scrapy1pip install scrapy">
+<meta property="og:image" content="http://wumoumou.github.io/img/crawler_result.png">
+<meta property="og:updated_time" content="2017-03-04T17:15:30.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="如何用scrapy写一个爬虫">
+<meta name="twitter:description" content="主要记录用scrapy写一个爬虫的步骤，以及这个框架要怎样使用。最近记性越来越差了。。。
+
+一、初始化一个爬虫1、安装scrapy1pip install scrapy">
+<meta name="twitter:image" content="http://wumoumou.github.io/img/crawler_result.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wumoumou.github.io/2017/03/04/How_to_write_in_scrapy_a_crawler/"/>
+
+
+
+
+
+  <title> 如何用scrapy写一个爬虫 | wumoumou's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">wumoumou's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wumoumou.github.io/2017/03/04/How_to_write_in_scrapy_a_crawler/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wumoumou">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wumoumou's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                如何用scrapy写一个爬虫
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-04T23:19:59+08:00">
+                2017-03-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>主要记录用scrapy写一个爬虫的步骤，以及这个框架要怎样使用。最近记性越来越差了。。。</p>
+</blockquote>
+<h3 id="一、初始化一个爬虫"><a href="#一、初始化一个爬虫" class="headerlink" title="一、初始化一个爬虫"></a>一、初始化一个爬虫</h3><h4 id="1、安装scrapy"><a href="#1、安装scrapy" class="headerlink" title="1、安装scrapy"></a>1、安装scrapy</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install scrapy</div></pre></td></tr></table></figure>
+<a id="more"></a>
+<h4 id="2、生成一个爬虫项目"><a href="#2、生成一个爬虫项目" class="headerlink" title="2、生成一个爬虫项目"></a>2、生成一个爬虫项目</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">scrapy startproject markbook</div></pre></td></tr></table></figure>
+<p>执行以上命令后，会在当前目录下生成一个 markbook 目录，然后就可以开心的在这个目录下写一些爬网页的代码了。。</p>
+<h4 id="3、目录结构及文件说明"><a href="#3、目录结构及文件说明" class="headerlink" title="3、目录结构及文件说明"></a>3、目录结构及文件说明</h4><p>生成目录的结构如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line">|____markbook</div><div class="line">| |______init__.py</div><div class="line">| |____items.py</div><div class="line">| |____middlewares.py</div><div class="line">| |____pipelines.py</div><div class="line">| |____settings.py</div><div class="line">| |____spiders</div><div class="line">| | |______init__.py</div><div class="line">|____scrapy.cfg</div></pre></td></tr></table></figure></p>
+<p><code>markbook/</code>: 该项目的python模块。<br><code>markbook/items.py</code>: 项目中的item文件，用来定义需要爬取的字段。<br><code>markbook/middlewares.py</code>: 下载器中间件，高大上的东西，没用过。<br><code>markbook/pipelines.py</code>: 项目中的pipelines文件，用于处理爬取的数据。<br><code>markbook/settings.py</code>: 爬虫的配置文件。<br><code>markbook/spiders/</code>: 爬虫代码存放目录，一个文件一个爬虫。<br><code>scrapy.cfg</code>: 项目的配置文件。不需要动。</p>
+<h3 id="二、开始写爬虫代码"><a href="#二、开始写爬虫代码" class="headerlink" title="二、开始写爬虫代码"></a>二、开始写爬虫代码</h3><blockquote>
+<p>以豆瓣网热点内容为例，实现一个爬虫</p>
+</blockquote>
+<h4 id="1、定义要爬取的字段"><a href="#1、定义要爬取的字段" class="headerlink" title="1、定义要爬取的字段"></a>1、定义要爬取的字段</h4><p>打开<code>markbook/items.py</code>文件，写入以下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"># -*- coding: utf-8 -*-</div><div class="line"></div><div class="line">from scrapy.item import Item, Field</div><div class="line"></div><div class="line"></div><div class="line">class GeneralItem(Item):</div><div class="line">    title = Field() # 标题</div><div class="line">    image = Field() # 图片链接</div><div class="line">    content = Field() # 描述内容</div><div class="line">    created = Field() # 创建时间</div></pre></td></tr></table></figure></p>
+<h4 id="2、创建一个爬虫"><a href="#2、创建一个爬虫" class="headerlink" title="2、创建一个爬虫"></a>2、创建一个爬虫</h4><p>在<code>markbook/spiders</code>目录下新建一个爬虫文件<code>douban_spider.py</code>，文件名可以随便取，大概的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div><div class="line">70</div><div class="line">71</div><div class="line">72</div><div class="line">73</div><div class="line">74</div><div class="line">75</div><div class="line">76</div><div class="line">77</div></pre></td><td class="code"><pre><div class="line"># coding=utf-8</div><div class="line"></div><div class="line">from scrapy.spiders import Spider</div><div class="line">from markbook.items import GeneralItem</div><div class="line">import os</div><div class="line">import time</div><div class="line">import sys</div><div class="line">reload(sys)</div><div class="line">sys.setdefaultencoding(&apos;utf8&apos;)</div><div class="line"></div><div class="line">class DoubanSpider(Spider):</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    douban爬虫</div><div class="line">    &quot;&quot;&quot;</div><div class="line">    # 这个爬虫的名字</div><div class="line">    name = &quot;douban&quot;</div><div class="line"> </div><div class="line">    # 爬虫需要访问的域名，有多少访问的域名都要加上</div><div class="line">    allowed_domains = [&quot;douban.com&quot;]</div><div class="line"> </div><div class="line">    # 爬取的链接</div><div class="line">    start_urls = [&quot;https://www.douban.com/explore/&quot;]</div><div class="line">    custom_settings = &#123;</div><div class="line">        &apos;ITEM_PIPELINES&apos;: &#123;</div><div class="line">            # 这个是处理爬取的数据的方法，需要自己写</div><div class="line">            &apos;markbook.pipelines.GeneralPipeline&apos;: 100,</div><div class="line">        &#125;</div><div class="line">    &#125;</div><div class="line">    </div><div class="line"></div><div class="line">    def parse(self, response):</div><div class="line">        # parse函数是固定格式的方法，默认访问的就是这个函数</div><div class="line">        item_lists = response.xpath(&apos;//div[@id=&quot;gallery_main_frame&quot;]/div[@class=&quot;item&quot;]&apos;)</div><div class="line"></div><div class="line">        for item_list in item_lists:</div><div class="line">            # 取标题</div><div class="line">            li_title = item_list.xpath(&apos;./div[@class=&quot;bd&quot;]/div[@class=&quot;content&quot;]/div[@class=&quot;title&quot;]/a/text()&apos;).extract()</div><div class="line">            if len(li_title) &lt; 1:</div><div class="line">                li_title = item_list.xpath(&apos;./div[@class=&quot;bd&quot;]/div[@class=&quot;title&quot;]/a/text()&apos;).extract()</div><div class="line">            if len(li_title) &lt; 1:</div><div class="line">                li_title = item_list.xpath(&apos;./div[@class=&quot;bd&quot;]/div[@class=&quot;content pdr&quot;]/div[@class=&quot;title&quot;]/a/text()&apos;).extract()</div><div class="line">            title = li_title[0]</div><div class="line">            # print title</div><div class="line"></div><div class="line">            # 取图片</div><div class="line">            li_image = item_list.xpath(&apos;./div[@class=&quot;bd&quot;]/div[@class=&quot;pic&quot;]/a/img/@src&apos;).extract()</div><div class="line">            if len(li_image) &lt; 1:</div><div class="line">                li_image = item_list.xpath(&apos;./div[@class=&quot;bd&quot;]/div[@class=&quot;pic&quot;]/a/@style&apos;).extract()</div><div class="line">                if len(li_image) &gt; 0:</div><div class="line">                    pos = li_image[0].find(&apos;(&apos;)</div><div class="line">                    li_image = li_image[0][pos + len(&apos;(&apos;):].strip().split(&apos;)&apos;)</div><div class="line">            if len(li_image) &lt; 1:</div><div class="line">                li_image = item_list.xpath(&apos;./div[@class=&quot;bd&quot;]/div[@class=&quot;content&quot;]/div[@class=&quot;photoslider&quot;]/div[@class=&quot;first-pic&quot;]/a/img/@src&apos;).extract()</div><div class="line">            if len(li_image) &lt; 1:</div><div class="line">                image = &apos;&apos;</div><div class="line">            else:</div><div class="line">                image = li_image[0]</div><div class="line">            # print image</div><div class="line"></div><div class="line">            # 取描述内容</div><div class="line">            li_content = item_list.xpath(&apos;./div[@class=&quot;bd&quot;]/div[@class=&quot;content&quot;]/p/a/text()&apos;).extract()</div><div class="line">            if len(li_content) &lt; 1:</div><div class="line">                li_content = item_list.xpath(&apos;./div[@class=&quot;bd&quot;]/div[@class=&quot;content pdr&quot;]/p/a/text()&apos;).extract()</div><div class="line"></div><div class="line">            if len(li_content) &lt; 1:</div><div class="line">                content = &apos;&apos;</div><div class="line">            else:</div><div class="line">                content = li_content[0]</div><div class="line">            # print content</div><div class="line"></div><div class="line">            item = GeneralItem()</div><div class="line">            item[&apos;title&apos;] = title</div><div class="line">            item[&apos;content&apos;] = content</div><div class="line">            item[&apos;image&apos;] = image</div><div class="line">            item[&apos;created&apos;] = int(time.time())</div><div class="line"></div><div class="line">            yield item</div></pre></td></tr></table></figure></p>
+<p> 需要说明的是，<code>parse()</code>函数里<code>response</code>对象默认使用<code>xpath</code>方式解析html数据。</p>
+<h4 id="3、处理爬取的数据"><a href="#3、处理爬取的数据" class="headerlink" title="3、处理爬取的数据"></a>3、处理爬取的数据</h4><p>爬取到数据后，可以将数据保存入库，或者做一些其它的操作。以入库为例，打开<code>markbook/pipelines.py</code>文件，定义上一步爬虫文件中指定的方法<code>GeneralPipeline</code>，保存数据到mysql数据库：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div></pre></td><td class="code"><pre><div class="line">#coding=utf-8</div><div class="line"></div><div class="line">import MySQLdb</div><div class="line">import types</div><div class="line"></div><div class="line">class MarkbookPipeline(object):</div><div class="line">    def process_item(self, item, spider):</div><div class="line">        return item</div><div class="line"></div><div class="line"></div><div class="line">class GeneralPipeline(object):</div><div class="line"></div><div class="line">    def __init__(self):</div><div class="line">        self.config = &#123;</div><div class="line">            &apos;host&apos;: &apos;127.0.0.1&apos;,</div><div class="line">            &apos;port&apos;: 3306,</div><div class="line">            &apos;user&apos;: &apos;root&apos;,</div><div class="line">            &apos;passwd&apos;: &apos;&apos;,</div><div class="line">            &apos;db&apos;: &apos;book_dev&apos;</div><div class="line">            &apos;charset&apos;: &apos;utf8&apos;,</div><div class="line">        &#125;</div><div class="line"></div><div class="line"></div><div class="line">    def process_item(self, item, spider):</div><div class="line">       # process_item函数为固定方法，用于处理数据</div><div class="line">        try:</div><div class="line">            self.db = MySQLdb.connect(**self.config)</div><div class="line">            insert_data = &#123;</div><div class="line">                &apos;title&apos;: item[&apos;title&apos;],</div><div class="line">                &apos;image&apos;: item[&apos;image&apos;],</div><div class="line">                &apos;content&apos;: item[&apos;content&apos;],</div><div class="line">                &apos;created&apos;: int(item[&apos;created&apos;]),</div><div class="line">            &#125;</div><div class="line"></div><div class="line">            # save data</div><div class="line">            self.insert(insert_data, &apos;articles&apos;)</div><div class="line">            print &quot;title: %s: created: %s&quot; % (item[&apos;title&apos;], item[&apos;created&apos;])</div><div class="line"></div><div class="line">        except Exception as e:</div><div class="line">            print &apos;error: %s&apos; % e</div><div class="line"></div><div class="line"></div><div class="line">    def insert(self, datas, table_name, lastid = False):</div><div class="line">        fields = []</div><div class="line">        values = []</div><div class="line">        for k, v in datas.items():</div><div class="line">            fields.append(&quot;`%s`&quot; % k)</div><div class="line">            if type(v) is types.StringType or type(v) is types.UnicodeType:</div><div class="line">                values.append(&quot;&apos;%s&apos;&quot; % v)</div><div class="line">            else:</div><div class="line">                values.append(v)</div><div class="line"></div><div class="line">        sql = &quot;INSERT INTO %s(%s) VALUES(%s)&quot; % \</div><div class="line">              (table_name, &apos;,&apos;.join(str(v) for v in fields), &apos;,&apos;.join(str(v) for v in values))</div><div class="line">        self.execute(sql)</div><div class="line">        if lastid:</div><div class="line">            return int(self.db.cursor().lastrowid)</div><div class="line"></div><div class="line"></div><div class="line">    def execute(self, sql):</div><div class="line">        c = self.db.cursor()</div><div class="line">        try:</div><div class="line">            c.execute(sql)</div><div class="line">            self.db.commit()</div><div class="line">        except Exception as e:</div><div class="line">            print &apos;error msg: %s | fail: %s&apos; % (e,sql)</div><div class="line">            self.db.rollback()</div></pre></td></tr></table></figure></p>
+<h4 id="4、运行爬虫"><a href="#4、运行爬虫" class="headerlink" title="4、运行爬虫"></a>4、运行爬虫</h4><p>mysql数据库建好后，就可以执行爬虫查看结果了。<br>在<code>markbook</code>目录下执行以下命令即可在数据库查看到爬取的结果了：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">scrapy crawl douban</div></pre></td></tr></table></figure></p>
+<p>结果：<br><img src="/img/crawler_result.png" alt="spider result"></p>
+<p>需要说明的是，在爬虫工作失败的时候，<code>settings.py</code>可能需要添加或修改一些配置，如自定义Http Header首部伪装自己，允许哪些Http状态码返回，爬虫是否遵守robot协议，重试几次等配置。</p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/scrapy/" rel="tag"># scrapy</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/avatar.png"
+               alt="wumoumou" />
+          <p class="site-author-name" itemprop="name">wumoumou</p>
+           
+              <p class="site-description motion-element" itemprop="description">写的不好，请随便指正。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">1</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">2</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、初始化一个爬虫"><span class="nav-number">1.</span> <span class="nav-text">一、初始化一个爬虫</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、安装scrapy"><span class="nav-number">1.1.</span> <span class="nav-text">1、安装scrapy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、生成一个爬虫项目"><span class="nav-number">1.2.</span> <span class="nav-text">2、生成一个爬虫项目</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、目录结构及文件说明"><span class="nav-number">1.3.</span> <span class="nav-text">3、目录结构及文件说明</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、开始写爬虫代码"><span class="nav-number">2.</span> <span class="nav-text">二、开始写爬虫代码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、定义要爬取的字段"><span class="nav-number">2.1.</span> <span class="nav-text">1、定义要爬取的字段</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、创建一个爬虫"><span class="nav-number">2.2.</span> <span class="nav-text">2、创建一个爬虫</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、处理爬取的数据"><span class="nav-number">2.3.</span> <span class="nav-text">3、处理爬取的数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4、运行爬虫"><span class="nav-number">2.4.</span> <span class="nav-text">4、运行爬虫</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wumoumou</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
