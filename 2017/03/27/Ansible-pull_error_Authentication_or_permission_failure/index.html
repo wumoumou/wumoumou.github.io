@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="python,nginx,uwsgi," />
+  <meta name="keywords" content="运维,ansible," />
 
 
 
@@ -87,22 +87,16 @@
 
 
 
-<meta name="description" content="用flask框架写了一个web程序后台运行，运行一段时间后程序会访问超时，需要重启进程才能正常访问，于是改用uwsgi管理进程，nginx作反向代理。。。主要作个配置方面的记录；
-
-uwsgi安装1pip install uwsgi">
+<meta name="description" content="前言: ansible的被动模式说明当一个东西被用到时你才会明白他为什么会被设计出来。因为项目需要实现弹性负载均衡，服务器是通过云主机商的api自动创建的，ip是随机分配的，找了很久，终于找到一个可以管理所有web的方法:ansible-pull。ansible-pull可以算是ansible的被动模式，指定一个ansible配置文件的git库，然后客户端任务计划里定时执行一个操作: 拉取最新的a">
 <meta property="og:type" content="article">
-<meta property="og:title" content="nginx+uwsgi配置python程序">
-<meta property="og:url" content="http://wumoumou.github.io/2017/03/12/Nginx_+_uwsgi_configuration_a_python_program/index.html">
+<meta property="og:title" content="ansible-pull报错'Authentication or permission failure.'解决办法">
+<meta property="og:url" content="http://wumoumou.github.io/2017/03/27/Ansible-pull_error_Authentication_or_permission_failure/index.html">
 <meta property="og:site_name" content="wumoumou's blog">
-<meta property="og:description" content="用flask框架写了一个web程序后台运行，运行一段时间后程序会访问超时，需要重启进程才能正常访问，于是改用uwsgi管理进程，nginx作反向代理。。。主要作个配置方面的记录；
-
-uwsgi安装1pip install uwsgi">
-<meta property="og:updated_time" content="2017-03-12T04:15:50.000Z">
+<meta property="og:description" content="前言: ansible的被动模式说明当一个东西被用到时你才会明白他为什么会被设计出来。因为项目需要实现弹性负载均衡，服务器是通过云主机商的api自动创建的，ip是随机分配的，找了很久，终于找到一个可以管理所有web的方法:ansible-pull。ansible-pull可以算是ansible的被动模式，指定一个ansible配置文件的git库，然后客户端任务计划里定时执行一个操作: 拉取最新的a">
+<meta property="og:updated_time" content="2017-03-27T07:38:01.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="nginx+uwsgi配置python程序">
-<meta name="twitter:description" content="用flask框架写了一个web程序后台运行，运行一段时间后程序会访问超时，需要重启进程才能正常访问，于是改用uwsgi管理进程，nginx作反向代理。。。主要作个配置方面的记录；
-
-uwsgi安装1pip install uwsgi">
+<meta name="twitter:title" content="ansible-pull报错'Authentication or permission failure.'解决办法">
+<meta name="twitter:description" content="前言: ansible的被动模式说明当一个东西被用到时你才会明白他为什么会被设计出来。因为项目需要实现弹性负载均衡，服务器是通过云主机商的api自动创建的，ip是随机分配的，找了很久，终于找到一个可以管理所有web的方法:ansible-pull。ansible-pull可以算是ansible的被动模式，指定一个ansible配置文件的git库，然后客户端任务计划里定时执行一个操作: 拉取最新的a">
 
 
 
@@ -130,13 +124,13 @@ uwsgi安装1pip install uwsgi">
 
 
 
-  <link rel="canonical" href="http://wumoumou.github.io/2017/03/12/Nginx_+_uwsgi_configuration_a_python_program/"/>
+  <link rel="canonical" href="http://wumoumou.github.io/2017/03/27/Ansible-pull_error_Authentication_or_permission_failure/"/>
 
 
 
 
 
-  <title> nginx+uwsgi配置python程序 | wumoumou's blog </title>
+  <title> ansible-pull报错'Authentication or permission failure.'解决办法 | wumoumou's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -265,7 +259,7 @@ uwsgi安装1pip install uwsgi">
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wumoumou.github.io/2017/03/12/Nginx_+_uwsgi_configuration_a_python_program/">
+    <link itemprop="mainEntityOfPage" href="http://wumoumou.github.io/2017/03/27/Ansible-pull_error_Authentication_or_permission_failure/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="wumoumou">
@@ -286,7 +280,7 @@ uwsgi安装1pip install uwsgi">
             
             
               
-                nginx+uwsgi配置python程序
+                ansible-pull报错'Authentication or permission failure.'解决办法
               
             
           </h1>
@@ -301,8 +295,8 @@ uwsgi安装1pip install uwsgi">
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-12T11:39:52+08:00">
-                2017-03-12
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-03-27T14:56:06+08:00">
+                2017-03-27
               </time>
             
 
@@ -324,8 +318,8 @@ uwsgi安装1pip install uwsgi">
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/python/" itemprop="url" rel="index">
-                    <span itemprop="name">python</span>
+                  <a href="/categories/运维/" itemprop="url" rel="index">
+                    <span itemprop="name">运维</span>
                   </a>
                 </span>
 
@@ -359,19 +353,14 @@ uwsgi安装1pip install uwsgi">
       
 
       
-        <blockquote>
-<p>用flask框架写了一个web程序后台运行，运行一段时间后程序会访问超时，需要重启进程才能正常访问，于是改用uwsgi管理进程，nginx作反向代理。。。主要作个配置方面的记录；</p>
-</blockquote>
-<h3 id="uwsgi安装"><a href="#uwsgi安装" class="headerlink" title="uwsgi安装"></a>uwsgi安装</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">pip install uwsgi</div></pre></td></tr></table></figure>
-<a id="more"></a>
-<h3 id="nginx配置"><a href="#nginx配置" class="headerlink" title="nginx配置"></a>nginx配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">upstream intternal &#123;</div><div class="line">    server 127.0.0.1:5000;</div><div class="line">&#125;</div><div class="line"></div><div class="line">server &#123;</div><div class="line"></div><div class="line">    listen       80;</div><div class="line">    server_name  domain.com;</div><div class="line"></div><div class="line">    location / &#123;</div><div class="line">        uwsgi_pass intternal;</div><div class="line">        include uwsgi_params;</div><div class="line">    &#125;</div><div class="line"></div><div class="line">    error_page  404              /404.html;</div><div class="line"></div><div class="line">&#125;</div></pre></td></tr></table></figure>
-<h3 id="uwsgi配置"><a href="#uwsgi配置" class="headerlink" title="uwsgi配置"></a>uwsgi配置</h3><p>在python程序的目录下(也可以是其它目录)新建一个文件<code>uwsgi.ini</code>(也可以是其它文件名)，添加如下配置：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">[uwsgi]</div><div class="line">socket = 127.0.0.1:5000  # 监听端口</div><div class="line">master = true</div><div class="line">workers = 2</div><div class="line">reload-mercy = 10     </div><div class="line">vacuum = true</div><div class="line">max-requests = 20       # 进程处理多少请求后重启</div><div class="line">limit-as = 512</div><div class="line">chdir = /shell/webdeploy/ # 指定运行目录</div><div class="line">wsgi-file = /shell/webdeploy/deploy.py    # 启动的程序</div><div class="line">callable = app                  # 启动程序里调用的方法</div><div class="line">pidfile = /var/run/deploy.pid</div><div class="line">daemonize = /var/log/deploy_daemon.log  # uwsgi运行log</div></pre></td></tr></table></figure></p>
-<blockquote>
-<p>有一个参数是<code>protocol</code>用于指定<code>uwsgi</code>当前遵循的协议，如果使用<code>uwsgi</code>做为入口的话可以将此项设成<code>http</code>，当前我们使用<code>nginx</code>反向代理<code>uwsgi</code>，则不需要指定此参数。</p>
-</blockquote>
-<h3 id="启动相关服务"><a href="#启动相关服务" class="headerlink" title="启动相关服务"></a>启动相关服务</h3><p>启动<code>uwsgi</code>，重启<code>nginx</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">cd /shell/webdeploy/</div><div class="line">uwsgi uwsgi.ini</div><div class="line">service nginx reload</div></pre></td></tr></table></figure></p>
-<p>关闭<code>uwsgi</code>(暂时只想到这么一种关闭的办法)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ps aux | grep uwsgi | grep -v grep| awk -F &apos; &apos; &apos;&#123;print $2&#125;&apos; | sudo xargs kill -9</div></pre></td></tr></table></figure></p>
-<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>测试代码就不贴了，反正是用python的flask框架写的一个程序，上面配置好后，用浏览器打开<code>nginx</code>配置的域名，访问正常就OK了。。。</p>
+        <h3 id="前言-ansible的被动模式说明"><a href="#前言-ansible的被动模式说明" class="headerlink" title="前言: ansible的被动模式说明"></a>前言: ansible的被动模式说明</h3><p>当一个东西被用到时你才会明白他为什么会被设计出来。因为项目需要实现弹性负载均衡，服务器是通过云主机商的api自动创建的，ip是随机分配的，找了很久，终于找到一个可以管理所有web的方法:<code>ansible-pull</code>。ansible-pull可以算是ansible的被动模式，指定一个ansible配置文件的git库，然后客户端任务计划里定时执行一个操作: 拉取最新的ansible配置文件，然后执行配置文件里的操作。经过研究，终于知道ansible-pull是怎么弄了，crontab里只需指定这么一条命令就行了。<br><a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">ansible-pull -d /etc/ansible -i /etc/ansible/localhost -U http://admin:admin@git.com/ansible_yml.git --accept-host-key web.yml</div></pre></td></tr></table></figure></p>
+<p>说明一下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">-d: 指定ansible配置文件目录，就是git pull的目录</div><div class="line">-i: 指定hosts，我这里面只写了一个127.0.0.1</div><div class="line">-U: 指定配置文件git库，需要提前作好帐号密码的免输入</div><div class="line">--accept-host-key: 使用ssh key</div><div class="line">web.yml: 针对主机执行的play book文件</div></pre></td></tr></table></figure></p>
+<h3 id="说下我今天遇到的问题吧"><a href="#说下我今天遇到的问题吧" class="headerlink" title="说下我今天遇到的问题吧"></a>说下我今天遇到的问题吧</h3><p>这种模式良好运行了好长一段时间，突然有一天，我发现有一台web不能执行这条命令了，报这个错：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">127.0.0.1 | UNREACHABLE! =&gt; &#123;</div><div class="line">    &quot;changed&quot;: false, </div><div class="line">    &quot;msg&quot;: &quot;Authentication or permission failure. In some cases, you may have been able to authenticate and did not have permissions on the remote directory. Consider changing the remote temp path in ansible.cfg to a path rooted in \&quot;/tmp\&quot;. Failed command was: ( umask 77 &amp;&amp; mkdir -p \&quot;` echo $HOME/.ansible/tmp/ansible-tmp-1490597204.1-45859862353791 `\&quot; &amp;&amp; echo ansible-tmp-1490597204.1-45859862353791=\&quot;` echo $HOME/.ansible/tmp/ansible-tmp-1490597204.1-45859862353791 `\&quot; ), exited with result 1&quot;, </div><div class="line">    &quot;unreachable&quot;: true</div><div class="line">&#125;</div></pre></td></tr></table></figure></p>
+<h4 id="1、配置文件问题吗？"><a href="#1、配置文件问题吗？" class="headerlink" title="1、配置文件问题吗？"></a>1、配置文件问题吗？</h4><p>根据网上提示的，修改配置文件，这是试的第一个解决办法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">remote_tmp     = $HOME/.ansible/tmp</div><div class="line">修改成：</div><div class="line">remote_tmp     = /tmp/.ansible/tmp</div></pre></td></tr></table></figure></p>
+<p>可是不行啊。</p>
+<h4 id="2、权限问题吗？"><a href="#2、权限问题吗？" class="headerlink" title="2、权限问题吗？"></a>2、权限问题吗？</h4><p>一开始我以为是权限的问题，于是和别的web各种对比ssh key，和ansible配置文件。发现没有被其他人动过。<br>后来注意到，这是用root跑的，不存在权限的问题，于是我换成ansible用户，这个用户可以sudo -i到root，发现可以成功的执行。</p>
+<h4 id="3、显示详情，找报错"><a href="#3、显示详情，找报错" class="headerlink" title="3、显示详情，找报错"></a>3、显示详情，找报错</h4><p>后来发现了一个可以显示详细报错的参数<code>-vvvvv</code>，于是加上这个参数又跑了一下，把结果中打印出的命令全执行了一遍，发现一个问题。为什么root不能在自己家目录下的.ansible/tmp目录下创建目录啊？于是查看这个目录下的文件，发现文件真多，感觉是文件太多的原因导致创建文件异常。于是把这个目录下所有的文件都删除了。然后再执行，发现成功了！<br>莫名奇妙。。。。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>一定是我crontab两分钟一次导致$HOME/.ansible/tmp目录下创建的文件达到系统文件数的上限了。我的根目录是ext3类型的文件系统，找了下，发现这种文件系统一级目录下只允许最多32000个文件，ext4无限制。看来以后要多清这个目录下的文件了。</p>
 
       
     </div>
@@ -395,11 +384,9 @@ uwsgi安装1pip install uwsgi">
       
         <div class="post-tags">
           
-            <a href="/tags/python/" rel="tag"># python</a>
+            <a href="/tags/运维/" rel="tag"># 运维</a>
           
-            <a href="/tags/nginx/" rel="tag"># nginx</a>
-          
-            <a href="/tags/uwsgi/" rel="tag"># uwsgi</a>
+            <a href="/tags/ansible/" rel="tag"># ansible</a>
           
         </div>
       
@@ -412,8 +399,8 @@ uwsgi安装1pip install uwsgi">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/03/11/Using_scrapy_will_encounter_problems/" rel="next" title="使用scrapy遇到的一些问题及解决办法">
-                <i class="fa fa-chevron-left"></i> 使用scrapy遇到的一些问题及解决办法
+              <a href="/2017/03/12/Nginx_+_uwsgi_configuration_a_python_program/" rel="next" title="nginx+uwsgi配置python程序">
+                <i class="fa fa-chevron-left"></i> nginx+uwsgi配置python程序
               </a>
             
           </div>
@@ -421,10 +408,6 @@ uwsgi安装1pip install uwsgi">
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/03/27/Ansible-pull_error_Authentication_or_permission_failure/" rel="prev" title="ansible-pull报错'Authentication or permission failure.'解决办法">
-                ansible-pull报错'Authentication or permission failure.'解决办法 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -549,7 +532,7 @@ uwsgi安装1pip install uwsgi">
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#uwsgi安装"><span class="nav-number">1.</span> <span class="nav-text">uwsgi安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#nginx配置"><span class="nav-number">2.</span> <span class="nav-text">nginx配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#uwsgi配置"><span class="nav-number">3.</span> <span class="nav-text">uwsgi配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#启动相关服务"><span class="nav-number">4.</span> <span class="nav-text">启动相关服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试"><span class="nav-number">5.</span> <span class="nav-text">测试</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#前言-ansible的被动模式说明"><span class="nav-number">1.</span> <span class="nav-text">前言: ansible的被动模式说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#说下我今天遇到的问题吧"><span class="nav-number">2.</span> <span class="nav-text">说下我今天遇到的问题吧</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、配置文件问题吗？"><span class="nav-number">2.1.</span> <span class="nav-text">1、配置文件问题吗？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、权限问题吗？"><span class="nav-number">2.2.</span> <span class="nav-text">2、权限问题吗？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、显示详情，找报错"><span class="nav-number">2.3.</span> <span class="nav-text">3、显示详情，找报错</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#总结"><span class="nav-number">3.</span> <span class="nav-text">总结</span></a></li></ol></div>
             
 
           </div>
