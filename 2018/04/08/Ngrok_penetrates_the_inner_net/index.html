@@ -71,7 +71,7 @@
 <link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="crontab," />
+  <meta name="keywords" content="ngrok,linux,centos,web,mysql,内网," />
 
 
 
@@ -87,16 +87,25 @@
 
 
 
-<meta name="description" content="发现一个crontab坑爹的彩蛋">
+<meta name="description" content="为了实面内网mysql主从同步，于是使用了ngrok，穿透内网，连接内网mysql，同步数据。
+
+一、安装go语言编译器1yum install go
+二、 下载ngrok12git clone https://github.com/inconshreveable/ngrok.gitcd ./ngrok">
 <meta property="og:type" content="article">
-<meta property="og:title" content="crontab彩蛋">
-<meta property="og:url" content="http://wumoumou.github.io/2017/07/29/Crontab_eggs/index.html">
+<meta property="og:title" content="CentOS6配置ngrok穿透内网访问web或mysql">
+<meta property="og:url" content="http://wumoumou.github.io/2018/04/08/Ngrok_penetrates_the_inner_net/index.html">
 <meta property="og:site_name" content="wumoumou's blog">
-<meta property="og:description" content="发现一个crontab坑爹的彩蛋">
-<meta property="og:updated_time" content="2017-07-29T04:07:49.000Z">
+<meta property="og:description" content="为了实面内网mysql主从同步，于是使用了ngrok，穿透内网，连接内网mysql，同步数据。
+
+一、安装go语言编译器1yum install go
+二、 下载ngrok12git clone https://github.com/inconshreveable/ngrok.gitcd ./ngrok">
+<meta property="og:updated_time" content="2018-04-08T05:39:40.973Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="crontab彩蛋">
-<meta name="twitter:description" content="发现一个crontab坑爹的彩蛋">
+<meta name="twitter:title" content="CentOS6配置ngrok穿透内网访问web或mysql">
+<meta name="twitter:description" content="为了实面内网mysql主从同步，于是使用了ngrok，穿透内网，连接内网mysql，同步数据。
+
+一、安装go语言编译器1yum install go
+二、 下载ngrok12git clone https://github.com/inconshreveable/ngrok.gitcd ./ngrok">
 
 
 
@@ -124,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="http://wumoumou.github.io/2017/07/29/Crontab_eggs/"/>
+  <link rel="canonical" href="http://wumoumou.github.io/2018/04/08/Ngrok_penetrates_the_inner_net/"/>
 
 
 
 
 
-  <title> crontab彩蛋 | wumoumou's blog </title>
+  <title> CentOS6配置ngrok穿透内网访问web或mysql | wumoumou's blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -259,7 +268,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://wumoumou.github.io/2017/07/29/Crontab_eggs/">
+    <link itemprop="mainEntityOfPage" href="http://wumoumou.github.io/2018/04/08/Ngrok_penetrates_the_inner_net/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="wumoumou">
@@ -280,7 +289,7 @@
             
             
               
-                crontab彩蛋
+                CentOS6配置ngrok穿透内网访问web或mysql
               
             
           </h1>
@@ -295,8 +304,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-07-29T11:45:52+08:00">
-                2017-07-29
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-04-08T11:23:00+08:00">
+                2018-04-08
               </time>
             
 
@@ -335,7 +344,7 @@
 
           
           
-             <span id="/2017/07/29/Crontab_eggs/" class="leancloud_visitors" data-flag-title="crontab彩蛋">
+             <span id="/2018/04/08/Ngrok_penetrates_the_inner_net/" class="leancloud_visitors" data-flag-title="CentOS6配置ngrok穿透内网访问web或mysql">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -365,15 +374,21 @@
 
       
         <blockquote>
-<p>发现一个crontab坑爹的彩蛋</p>
+<p>为了实面内网mysql主从同步，于是使用了ngrok，穿透内网，连接内网mysql，同步数据。</p>
 </blockquote>
+<h3 id="一、安装go语言编译器"><a href="#一、安装go语言编译器" class="headerlink" title="一、安装go语言编译器"></a>一、安装go语言编译器</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">yum install go</div></pre></td></tr></table></figure>
+<h3 id="二、-下载ngrok"><a href="#二、-下载ngrok" class="headerlink" title="二、 下载ngrok"></a>二、 下载ngrok</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">git clone https://github.com/inconshreveable/ngrok.git</div><div class="line">cd ./ngrok</div></pre></td></tr></table></figure>
 <a id="more"></a>
-<p>一般写<code>crontab</code>输出重定向，通常这样写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">*/1 * * * * php /root/php_argv.php&gt;&gt; /tmp/php_argv_log.out</div></pre></td></tr></table></figure></p>
-<p>如果要给执行的脚本加参数，通常这样写：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">*/1 * * * * php /root/php_argv.php 1 2 3&gt;&gt; /tmp/php_argv_log.out</div></pre></td></tr></table></figure></p>
-<p>然而，经历过一次脚本执行失败后，发现一个有趣的现象。上面的写法只能获取到前两个参数：1和2，3获取不到。正确的写法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">*/1 * * * * php /root/php_argv.php 1 2 3 &gt;&gt; /tmp/php_argv_log.out</div></pre></td></tr></table></figure></p>
-<p>输出重定向符号<code>&gt;&gt;</code>前面要加空格。</p>
-<p>测试脚本<code>php_argv.php</code>：<br><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line"><span class="keyword">global</span> $argv;</div><div class="line">$var = date(<span class="string">"Y-m-d H:i:s"</span>).json_encode($argv).<span class="string">"\n"</span>;</div><div class="line">file_put_contents(<span class="string">'/tmp/php_argv.log'</span>, $var, FILE_APPEND);</div></pre></td></tr></table></figure></p>
-<p>两次<code>crontab</code>，执行结果:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">root@iZ23cv3b26eZ:~# tailf /tmp/php_argv.log</div><div class="line">2017-07-29 11:49:01[&quot;\/root\/php_argv.php&quot;,&quot;1&quot;,&quot;2&quot;]</div><div class="line">2017-07-29 11:50:01[&quot;\/root\/php_argv.php&quot;,&quot;1&quot;,&quot;2&quot;,&quot;3&quot;]</div></pre></td></tr></table></figure></p>
+<h3 id="三、选定一个base域名-tunnel-domain-com-，将域名解析至服务器IP，为base域名tunnel-domain-com生成证书"><a href="#三、选定一个base域名-tunnel-domain-com-，将域名解析至服务器IP，为base域名tunnel-domain-com生成证书" class="headerlink" title="三、选定一个base域名(tunnel.domain.com)，将域名解析至服务器IP，为base域名tunnel.domain.com生成证书"></a>三、选定一个base域名(tunnel.domain.com)，将域名解析至服务器IP，为base域名tunnel.domain.com生成证书</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">openssl genrsa -out rootCA.key 2048</div><div class="line">openssl req -x509 -new -nodes -key rootCA.key -subj &quot;/CN=tunnel.domain.com&quot; -days 5000 -out rootCA.pem</div><div class="line">openssl genrsa -out device.key 2048</div><div class="line">openssl req -new -key device.key -subj &quot;/CN=tunnel.domain.com&quot; -out device.csr</div><div class="line">openssl x509 -req -in device.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out device.crt -days 5000</div></pre></td></tr></table></figure>
+<h3 id="四、替换默认的证书文件"><a href="#四、替换默认的证书文件" class="headerlink" title="四、替换默认的证书文件"></a>四、替换默认的证书文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line">cp rootCA.pem assets/client/tls/ngrokroot.crt</div><div class="line">cp device.crt assets/server/tls/snakeoil.crt </div><div class="line">cp device.key assets/server/tls/snakeoil.key</div></pre></td></tr></table></figure>
+<h3 id="五、编译服务端"><a href="#五、编译服务端" class="headerlink" title="五、编译服务端"></a>五、编译服务端</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">make release-server</div></pre></td></tr></table></figure>
+<h3 id="六、启动ngrokd服务器端"><a href="#六、启动ngrokd服务器端" class="headerlink" title="六、启动ngrokd服务器端"></a>六、启动ngrokd服务器端</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./bin/ngrokd -domain=&quot;tunnel.domain.com&quot; -httpAddr=&quot;:8080&quot; -log=&quot;ngrok.log&quot;</div></pre></td></tr></table></figure>
+<h3 id="七、编译客户端"><a href="#七、编译客户端" class="headerlink" title="七、编译客户端"></a>七、编译客户端</h3><p>1、 windows<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GOOS=windows GOARCH=amd64 make release-client</div><div class="line">ls ./ngrok/bin/windows_amd64/ngrok</div></pre></td></tr></table></figure></p>
+<p>2、macos(测试用)<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">GOOS=darwin GOARCH=amd64 make release-client</div><div class="line">ls ./ngrok/bin/darwin_amd64/ngrok</div></pre></td></tr></table></figure></p>
+<h3 id="八、编写客户端启动时加载的配置文件"><a href="#八、编写客户端启动时加载的配置文件" class="headerlink" title="八、编写客户端启动时加载的配置文件"></a>八、编写客户端启动时加载的配置文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line">cd ./ngrok/bin/windows_amd64/ngrok</div><div class="line">vim ngrok.cfg</div><div class="line">-----------------------------------------------</div><div class="line">server_addr: &quot;tunnel.domain.com:4443&quot;</div><div class="line">trust_host_root_certs: false</div><div class="line">tunnels:</div><div class="line">    http:</div><div class="line">        proto:</div><div class="line">            http: 80</div><div class="line">        subdomain: test</div><div class="line">    mysql:</div><div class="line">        remote_port: 45439</div><div class="line">        proto:</div><div class="line">            tcp: 3306</div></pre></td></tr></table></figure>
+<h3 id="九、将客户端打包至客户端服务器并启动服务"><a href="#九、将客户端打包至客户端服务器并启动服务" class="headerlink" title="九、将客户端打包至客户端服务器并启动服务"></a>九、将客户端打包至客户端服务器并启动服务</h3><p>启动一个的方式(2种)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">./ngrok -subdomain pub -proto=http -config=ngrok.cfg 80</div><div class="line">./ngrok -config=ngrok.cfg start mysql</div></pre></td></tr></table></figure></p>
+<p>启动多个方式(1种)：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./ngrok -config=ngrok.cfg start mysql http</div></pre></td></tr></table></figure></p>
+<h3 id="十、测试"><a href="#十、测试" class="headerlink" title="十、测试"></a>十、测试</h3><p>1、web服务须先将测试域名(test.tunnel.domain.com)解析至ngrok服务端ip<br>2、web服务测试，客户端服务器打开本地web地址，外网任一主机打开地址：test.tunnel.domain.com:8080，如果内容一样，则成功了<br>3、mysql服务测试，远程使用mysql命令： mysql -htunnel.domain.com –port 45439 连接成功，则成功了</p>
 
       
     </div>
@@ -397,7 +412,17 @@
       
         <div class="post-tags">
           
-            <a href="/tags/crontab/" rel="tag"># crontab</a>
+            <a href="/tags/ngrok/" rel="tag"># ngrok</a>
+          
+            <a href="/tags/linux/" rel="tag"># linux</a>
+          
+            <a href="/tags/centos/" rel="tag"># centos</a>
+          
+            <a href="/tags/web/" rel="tag"># web</a>
+          
+            <a href="/tags/mysql/" rel="tag"># mysql</a>
+          
+            <a href="/tags/内网/" rel="tag"># 内网</a>
           
         </div>
       
@@ -410,8 +435,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/07/15/Use_ipset_to_guard_against_ddos_experience/" rel="next" title="一次使用ipset防范ddos的经历">
-                <i class="fa fa-chevron-left"></i> 一次使用ipset防范ddos的经历
+              <a href="/2017/07/29/Crontab_eggs/" rel="next" title="crontab彩蛋">
+                <i class="fa fa-chevron-left"></i> crontab彩蛋
               </a>
             
           </div>
@@ -419,10 +444,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/04/08/Ngrok_penetrates_the_inner_net/" rel="prev" title="CentOS6配置ngrok穿透内网访问web或mysql">
-                CentOS6配置ngrok穿透内网访问web或mysql <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -471,8 +492,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/img/avatar.png"
@@ -530,6 +560,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、安装go语言编译器"><span class="nav-number">1.</span> <span class="nav-text">一、安装go语言编译器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、-下载ngrok"><span class="nav-number">2.</span> <span class="nav-text">二、 下载ngrok</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、选定一个base域名-tunnel-domain-com-，将域名解析至服务器IP，为base域名tunnel-domain-com生成证书"><span class="nav-number">3.</span> <span class="nav-text">三、选定一个base域名(tunnel.domain.com)，将域名解析至服务器IP，为base域名tunnel.domain.com生成证书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、替换默认的证书文件"><span class="nav-number">4.</span> <span class="nav-text">四、替换默认的证书文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五、编译服务端"><span class="nav-number">5.</span> <span class="nav-text">五、编译服务端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#六、启动ngrokd服务器端"><span class="nav-number">6.</span> <span class="nav-text">六、启动ngrokd服务器端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#七、编译客户端"><span class="nav-number">7.</span> <span class="nav-text">七、编译客户端</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#八、编写客户端启动时加载的配置文件"><span class="nav-number">8.</span> <span class="nav-text">八、编写客户端启动时加载的配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#九、将客户端打包至客户端服务器并启动服务"><span class="nav-number">9.</span> <span class="nav-text">九、将客户端打包至客户端服务器并启动服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#十、测试"><span class="nav-number">10.</span> <span class="nav-text">十、测试</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
