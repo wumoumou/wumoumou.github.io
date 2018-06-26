@@ -1,0 +1,865 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.0" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="php,python,session,flask,phpserialize," />
+
+
+
+
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/img/favicon.ico?v=5.1.0" />
+
+
+
+
+
+
+<meta name="description" content="用python写了一个web工具，为了放至php的后台但只调用一套身份验证机制，于是研究了一下跨域的session共享
+
+一、实现方式php在执行session_start()函数后会在配置的session_path目录下生成一个以sessionId命名的文件，文件内容即是$_SESSION变量的内容。浏览器端会生成一个以PHPSESSID命名的cookie，cookie的内容就是sessio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="php和python实现跨域共享session">
+<meta property="og:url" content="http://wumoumou.github.io/2018/06/26/PHP_and_python_implement_session_sharing_across_domains/index.html">
+<meta property="og:site_name" content="wumoumou's blog">
+<meta property="og:description" content="用python写了一个web工具，为了放至php的后台但只调用一套身份验证机制，于是研究了一下跨域的session共享
+
+一、实现方式php在执行session_start()函数后会在配置的session_path目录下生成一个以sessionId命名的文件，文件内容即是$_SESSION变量的内容。浏览器端会生成一个以PHPSESSID命名的cookie，cookie的内容就是sessio">
+<meta property="og:image" content="http://wumoumou.github.io/img/python_nologin_view_sessionid.png">
+<meta property="og:image" content="http://wumoumou.github.io/img/php_session_login.png">
+<meta property="og:image" content="http://wumoumou.github.io/img/php_session_content.png">
+<meta property="og:image" content="http://wumoumou.github.io/img/python_login_view_sessionid.png">
+<meta property="og:image" content="http://wumoumou.github.io/img/python_session_content.png">
+<meta property="og:image" content="http://wumoumou.github.io/img/python_session_log.png">
+<meta property="og:updated_time" content="2018-06-26T08:43:17.933Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="php和python实现跨域共享session">
+<meta name="twitter:description" content="用python写了一个web工具，为了放至php的后台但只调用一套身份验证机制，于是研究了一下跨域的session共享
+
+一、实现方式php在执行session_start()函数后会在配置的session_path目录下生成一个以sessionId命名的文件，文件内容即是$_SESSION变量的内容。浏览器端会生成一个以PHPSESSID命名的cookie，cookie的内容就是sessio">
+<meta name="twitter:image" content="http://wumoumou.github.io/img/python_nologin_view_sessionid.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    sidebar: {"position":"left","display":"hide","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://wumoumou.github.io/2018/06/26/PHP_and_python_implement_session_sharing_across_domains/"/>
+
+
+
+
+
+  <title> php和python实现跨域共享session | wumoumou's blog </title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container one-collumn sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">wumoumou's blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://wumoumou.github.io/2018/06/26/PHP_and_python_implement_session_sharing_across_domains/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="wumoumou">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/img/avatar.png">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="wumoumou's blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                php和python实现跨域共享session
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-06-26T11:38:23+08:00">
+                2018-06-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/python/" itemprop="url" rel="index">
+                    <span itemprop="name">python</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+             <span id="/2018/06/26/PHP_and_python_implement_session_sharing_across_domains/" class="leancloud_visitors" data-flag-title="php和python实现跨域共享session">
+               <span class="post-meta-divider">|</span>
+               <span class="post-meta-item-icon">
+                 <i class="fa fa-eye"></i>
+               </span>
+               
+                 <span class="post-meta-item-text">阅读次数 </span>
+               
+                 <span class="leancloud-visitors-count"></span>
+             </span>
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p> 用python写了一个web工具，为了放至php的后台但只调用一套身份验证机制，于是研究了一下跨域的session共享</p>
+</blockquote>
+<h3 id="一、实现方式"><a href="#一、实现方式" class="headerlink" title="一、实现方式"></a>一、实现方式</h3><p>php在执行<code>session_start()</code>函数后会在配置的<code>session_path</code>目录下生成一个以<code>sessionId</code>命名的文件，文件内容即是<code>$_SESSION</code>变量的内容。浏览器端会生成一个以<code>PHPSESSID</code>命名的<code>cookie</code>，<code>cookie</code>的内容就是<code>sessionId</code>。所以根据这个可以通过传递<code>sessionId</code>的方式，实现同一服务器跨域共享<code>session</code>。</p>
+<a id="more"></a>
+<h3 id="二、两个域名"><a href="#二、两个域名" class="headerlink" title="二、两个域名"></a>二、两个域名</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line">php站点(已实现登陆)</div><div class="line">域名：http://127.0.0.1:8080/messi/login.php </div><div class="line"></div><div class="line">python站点(未实现登陆，需要跨域访问php站点session)</div><div class="line">域名：http://127.0.0.1:50001/index</div></pre></td></tr></table></figure>
+<h3 id="三、php部分"><a href="#三、php部分" class="headerlink" title="三、php部分"></a>三、php部分</h3><p>三个文件，<code>login.php</code>、<code>content.php</code>、<code>logout.php</code></p>
+<h4 id="1、login-php-文件，登陆页面"><a href="#1、login-php-文件，登陆页面" class="headerlink" title="1、login.php 文件，登陆页面"></a>1、login.php 文件，登陆页面</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line">header(<span class="string">"Content-type: text/html; charset=utf-8"</span>);</div><div class="line">session_start();</div><div class="line"></div><div class="line"><span class="keyword">if</span> ($_SERVER[<span class="string">'REQUEST_METHOD'</span>] == <span class="string">'POST'</span>) &#123;</div><div class="line">    $user = $_POST[<span class="string">'user'</span>];</div><div class="line">    $pass = $_POST[<span class="string">'pass'</span>];</div><div class="line"></div><div class="line">    <span class="keyword">if</span> ($user == <span class="string">'tony'</span> &amp;&amp; $pass == <span class="string">'123456'</span>) &#123;</div><div class="line">        <span class="comment">// 登陆成功</span></div><div class="line">        $_SESSION[<span class="string">'user_info'</span>] = [<span class="string">'user'</span> =&gt; <span class="string">'tony'</span>, <span class="string">'pass'</span> =&gt; <span class="string">'123456'</span>, <span class="string">'nick'</span> =&gt; <span class="string">'二狗'</span>, <span class="string">'email'</span> =&gt; <span class="string">'tony@xxx.com'</span>];</div><div class="line">        <span class="keyword">echo</span> <span class="string">'&lt;p&gt;登陆成功&lt;/p&gt;'</span>;</div><div class="line">        <span class="keyword">echo</span> <span class="string">'&lt;meta http-equiv="refresh" content="3;url=./content.php"&gt;'</span>;</div><div class="line">    &#125; <span class="keyword">else</span> &#123;</div><div class="line">        <span class="keyword">echo</span> <span class="string">'error!'</span>;</div><div class="line">    &#125;</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line"><span class="meta">?&gt;</span></div><div class="line"></div><div class="line">    &lt;form action=<span class="string">""</span> method=<span class="string">"post"</span>&gt;</div><div class="line">        &lt;p&gt;user: &lt;input type=<span class="string">"text"</span> name=<span class="string">"user"</span>&gt;&lt;/p&gt;</div><div class="line">        &lt;p&gt;pass: &lt;input type=<span class="string">"password"</span> name=<span class="string">"pass"</span>&gt;&lt;/p&gt;</div><div class="line">        &lt;p&gt;&lt;input type=<span class="string">"submit"</span> value=<span class="string">"提交"</span>&gt;&lt;/p&gt;</div><div class="line">    &lt;/form&gt;</div><div class="line"></div><div class="line"><span class="meta">&lt;?php</span></div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="2、content-php-文件，登陆成功跳转的内容页"><a href="#2、content-php-文件，登陆成功跳转的内容页" class="headerlink" title="2、content.php 文件，登陆成功跳转的内容页"></a>2、content.php 文件，登陆成功跳转的内容页</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line">header(<span class="string">"Content-type: text/html; charset=utf-8"</span>);</div><div class="line">session_start();</div><div class="line"></div><div class="line"><span class="keyword">if</span> (<span class="keyword">isset</span>($_SESSION[<span class="string">'user_info'</span>])) &#123;</div><div class="line">    <span class="keyword">echo</span> <span class="string">'&lt;p&gt;您好: '</span>. $_SESSION[<span class="string">'user_info'</span>][<span class="string">'nick'</span>].<span class="string">'&lt;/p&gt;'</span>;</div><div class="line">    <span class="keyword">echo</span> <span class="string">'&lt;p&gt;&lt;a href="./logout.php"&gt;退出&lt;/a&gt;&lt;/p&gt;'</span>;</div><div class="line"></div><div class="line">    <span class="comment">// 生成远程cookie</span></div><div class="line">    <span class="keyword">echo</span> &lt;&lt;&lt; eod</div><div class="line">    &lt;script type=<span class="string">"text/javascript"</span>&gt;</div><div class="line">        <span class="function"><span class="keyword">function</span> <span class="title">getCookie</span><span class="params">(name)</span></span></div><div class="line">        &#123;</div><div class="line">            <span class="keyword">var</span> arr,reg=<span class="keyword">new</span> RegExp(<span class="string">"(^| )"</span>+name+<span class="string">"=([^;]*)(;|$)"</span>);</div><div class="line">            <span class="keyword">if</span>(arr=document.cookie.match(reg))</div><div class="line">                <span class="keyword">return</span> unescape(arr[<span class="number">2</span>]);</div><div class="line">            <span class="keyword">else</span></div><div class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</div><div class="line">        &#125;</div><div class="line">        <span class="keyword">var</span> _frm = document.createElement(<span class="string">"iframe"</span>);</div><div class="line">        _frm.style.display=<span class="string">"none"</span>;</div><div class="line">        <span class="keyword">var</span> phpsession = getCookie(<span class="string">"PHPSESSID"</span>);</div><div class="line">        console.log(phpsession);</div><div class="line">        _frm.src = <span class="string">"http://127.0.0.1:50001/set_cookie?session_id="</span>+phpsession;</div><div class="line">        document.body.appendChild(_frm);</div><div class="line">    &lt;/script&gt;</div><div class="line">eod;</div><div class="line">&#125; <span class="keyword">else</span> &#123;</div><div class="line">    <span class="keyword">echo</span> <span class="string">'&lt;p&gt;请登陆&lt;/p&gt;'</span>;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h4 id="3、logout-php-退出页面，销毁session"><a href="#3、logout-php-退出页面，销毁session" class="headerlink" title="3、logout.php 退出页面，销毁session"></a>3、logout.php 退出页面，销毁session</h4><figure class="highlight php"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">&lt;?php</span></div><div class="line">header(<span class="string">"Content-type: text/html; charset=utf-8"</span>);</div><div class="line">session_start();</div><div class="line">session_destroy();</div><div class="line"><span class="keyword">echo</span> <span class="string">'退出成功'</span>;</div><div class="line"><span class="keyword">echo</span> &lt;&lt;&lt; eod</div><div class="line">    &lt;script type=<span class="string">"text/javascript"</span>&gt;</div><div class="line">        <span class="keyword">var</span> _frm = document.createElement(<span class="string">"iframe"</span>);</div><div class="line">        _frm.style.display=<span class="string">"none"</span>;</div><div class="line">        _frm.src = <span class="string">"http://127.0.0.1:50001/set_cookie?session_id="</span>;</div><div class="line">        document.body.appendChild(_frm);</div><div class="line">    &lt;/script&gt;</div><div class="line">eod;</div><div class="line"><span class="keyword">echo</span> <span class="string">'&lt;meta http-equiv="refresh" content="3;url=./login.php"&gt;'</span>;</div></pre></td></tr></table></figure>
+<h3 id="四、python-部分"><a href="#四、python-部分" class="headerlink" title="四、python 部分"></a>四、python 部分</h3><p>一个文件，<code>app.py</code></p>
+<h4 id="1、app-py文件"><a href="#1、app-py文件" class="headerlink" title="1、app.py文件"></a>1、app.py文件</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div><div class="line">56</div><div class="line">57</div><div class="line">58</div><div class="line">59</div><div class="line">60</div><div class="line">61</div><div class="line">62</div><div class="line">63</div><div class="line">64</div><div class="line">65</div><div class="line">66</div><div class="line">67</div><div class="line">68</div><div class="line">69</div></pre></td><td class="code"><pre><div class="line"><span class="comment">#!/usr/bin/python</span></div><div class="line"><span class="comment"># coding=utf-8</span></div><div class="line">__author__ = <span class="string">'wumoumou'</span></div><div class="line"></div><div class="line"><span class="keyword">import</span> os</div><div class="line"><span class="keyword">import</span> time</div><div class="line"><span class="keyword">import</span> sys</div><div class="line"><span class="keyword">from</span> flask <span class="keyword">import</span> Flask,request,Response,render_template,make_response,redirect</div><div class="line"><span class="keyword">import</span> phpserialize</div><div class="line"></div><div class="line">reload(sys)</div><div class="line">sys.setdefaultencoding(<span class="string">'utf8'</span>)</div><div class="line"></div><div class="line">app = Flask(__name__)</div><div class="line">php_session_path = <span class="string">"/var/tmp/"</span></div><div class="line">login_url = <span class="string">"http://127.0.0.1:8080/messi/login.php"</span></div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@app.route('/set_cookie', methods=['GET'])</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">set_cookie</span><span class="params">()</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    设置 cookie</div><div class="line">    :return:</div><div class="line">    """</div><div class="line">    session_id = request.values.get(<span class="string">"session_id"</span>).strip()</div><div class="line">    response = make_response(<span class="string">'set cookie'</span>)</div><div class="line">    response.set_cookie(<span class="string">'session_id'</span>, session_id, expires=time.time()+<span class="number">6666666</span>)</div><div class="line">    <span class="keyword">return</span> response</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@app.route('/view_cookie', methods=['GET'])</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">view_cookie</span><span class="params">()</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    测试地址，主要用于查看本地 cookie session_id</div><div class="line">    :return:</div><div class="line">    """</div><div class="line">    session_id = request.cookies.get(<span class="string">'session_id'</span>)</div><div class="line">    <span class="keyword">return</span> <span class="string">'session_id: %s'</span> % session_id</div><div class="line"></div><div class="line"></div><div class="line"><span class="meta">@app.route('/index', methods=['GET'])</span></div><div class="line"><span class="function"><span class="keyword">def</span> <span class="title">index</span><span class="params">()</span>:</span></div><div class="line">    <span class="string">"""</span></div><div class="line">    操作页面</div><div class="line">    :return:</div><div class="line">    """</div><div class="line">    session_content = <span class="string">""</span></div><div class="line">    <span class="keyword">if</span> <span class="string">"session_id"</span> <span class="keyword">in</span> request.cookies:</div><div class="line">        session_file = <span class="string">"%ssess_%s"</span> % (php_session_path, request.cookies.get(<span class="string">"session_id"</span>))</div><div class="line">        <span class="keyword">print</span> <span class="string">"session file: "</span>,session_file</div><div class="line">        <span class="keyword">if</span> os.path.exists(session_file):</div><div class="line">            f = open(session_file)</div><div class="line">            session_content = f.read()</div><div class="line"></div><div class="line">    <span class="keyword">print</span> <span class="string">'session content: '</span>, session_content</div><div class="line">    <span class="keyword">if</span> session_content:</div><div class="line">        session_list = session_content.split(<span class="string">"|"</span>)</div><div class="line">        <span class="keyword">if</span> session_list[<span class="number">0</span>]:</div><div class="line">            <span class="keyword">print</span> <span class="string">'session user_info: '</span>, session_list[<span class="number">1</span>]</div><div class="line">            user_info = phpserialize.loads(session_list[<span class="number">1</span>])</div><div class="line">            nick = user_info[<span class="string">'nick'</span>]</div><div class="line">            <span class="keyword">return</span> <span class="string">'您好：%s'</span> % nick</div><div class="line">        <span class="keyword">else</span>:</div><div class="line">            <span class="keyword">return</span> redirect(login_url)</div><div class="line">    <span class="keyword">else</span>:</div><div class="line">        <span class="keyword">return</span> redirect(login_url)</div><div class="line"></div><div class="line"><span class="keyword">if</span> __name__ == <span class="string">'__main__'</span>:</div><div class="line">    app.run(host=<span class="string">'0.0.0.0'</span>, port=<span class="number">50001</span>)</div></pre></td></tr></table></figure>
+<h3 id="五、结果"><a href="#五、结果" class="headerlink" title="五、结果"></a>五、结果</h3><h4 id="未登陆状态下，查看python站点cookie记录的sessionId"><a href="#未登陆状态下，查看python站点cookie记录的sessionId" class="headerlink" title="未登陆状态下，查看python站点cookie记录的sessionId"></a>未登陆状态下，查看python站点cookie记录的sessionId</h4><p><img src="/img/python_nologin_view_sessionid.png" alt="spider result"></p>
+<h4 id="php站点登陆页"><a href="#php站点登陆页" class="headerlink" title="php站点登陆页"></a>php站点登陆页</h4><p><img src="/img/php_session_login.png" alt="spider result"></p>
+<h4 id="登陆成功，跳转至php站点内容页"><a href="#登陆成功，跳转至php站点内容页" class="headerlink" title="登陆成功，跳转至php站点内容页"></a>登陆成功，跳转至php站点内容页</h4><p><img src="/img/php_session_content.png" alt="spider result"></p>
+<h4 id="登陆成功，此时查看python站点cookie记录的sessionId"><a href="#登陆成功，此时查看python站点cookie记录的sessionId" class="headerlink" title="登陆成功，此时查看python站点cookie记录的sessionId"></a>登陆成功，此时查看python站点cookie记录的sessionId</h4><p><img src="/img/python_login_view_sessionid.png" alt="spider result"></p>
+<h4 id="登陆成功，此时查看python站点内容"><a href="#登陆成功，此时查看python站点内容" class="headerlink" title="登陆成功，此时查看python站点内容"></a>登陆成功，此时查看python站点内容</h4><p><img src="/img/python_session_content.png" alt="spider result"></p>
+<h4 id="app-py-打印log"><a href="#app-py-打印log" class="headerlink" title="app.py 打印log"></a>app.py 打印log</h4><p><img src="/img/python_session_log.png" alt="spider result"></p>
+<h3 id="六、不方便的地方"><a href="#六、不方便的地方" class="headerlink" title="六、不方便的地方"></a>六、不方便的地方</h3><p>1、两个站点只能在同一服务器上<br>2、测试服和正试服不能混用<br>3、以上解决办法是将<code>session</code>保存至<code>mysql</code>或者<code>redis</code></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/php/" rel="tag"># php</a>
+          
+            <a href="/tags/python/" rel="tag"># python</a>
+          
+            <a href="/tags/session/" rel="tag"># session</a>
+          
+            <a href="/tags/flask/" rel="tag"># flask</a>
+          
+            <a href="/tags/phpserialize/" rel="tag"># phpserialize</a>
+          
+        </div>
+      
+
+      
+        
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/04/08/Ngrok_penetrates_the_inner_net/" rel="next" title="CentOS6配置ngrok穿透内网访问web或mysql">
+                <i class="fa fa-chevron-left"></i> CentOS6配置ngrok穿透内网访问web或mysql
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+          
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+      <div id="lv-container" data-id="city" data-uid="MTAyMC8yOTgxNi82Mzgy"></div>
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/img/avatar.png"
+               alt="wumoumou" />
+          <p class="site-author-name" itemprop="name">wumoumou</p>
+           
+              <p class="site-description motion-element" itemprop="description">亦余心之所善兮，虽九死其犹未悔。</p>
+          
+        </div>
+        <nav class="site-state motion-element">
+        
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives">
+                <span class="site-state-item-count">8</span>
+                <span class="site-state-item-name">日志</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-categories">
+              <a href="/categories">
+                <span class="site-state-item-count">5</span>
+                <span class="site-state-item-name">分类</span>
+              </a>
+            </div>
+          
+
+          
+            <div class="site-state-item site-state-tags">
+              <a href="/tags">
+                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-name">标签</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、实现方式"><span class="nav-number">1.</span> <span class="nav-text">一、实现方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、两个域名"><span class="nav-number">2.</span> <span class="nav-text">二、两个域名</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、php部分"><span class="nav-number">3.</span> <span class="nav-text">三、php部分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、login-php-文件，登陆页面"><span class="nav-number">3.1.</span> <span class="nav-text">1、login.php 文件，登陆页面</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2、content-php-文件，登陆成功跳转的内容页"><span class="nav-number">3.2.</span> <span class="nav-text">2、content.php 文件，登陆成功跳转的内容页</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3、logout-php-退出页面，销毁session"><span class="nav-number">3.3.</span> <span class="nav-text">3、logout.php 退出页面，销毁session</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、python-部分"><span class="nav-number">4.</span> <span class="nav-text">四、python 部分</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1、app-py文件"><span class="nav-number">4.1.</span> <span class="nav-text">1、app.py文件</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五、结果"><span class="nav-number">5.</span> <span class="nav-text">五、结果</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#未登陆状态下，查看python站点cookie记录的sessionId"><span class="nav-number">5.1.</span> <span class="nav-text">未登陆状态下，查看python站点cookie记录的sessionId</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#php站点登陆页"><span class="nav-number">5.2.</span> <span class="nav-text">php站点登陆页</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#登陆成功，跳转至php站点内容页"><span class="nav-number">5.3.</span> <span class="nav-text">登陆成功，跳转至php站点内容页</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#登陆成功，此时查看python站点cookie记录的sessionId"><span class="nav-number">5.4.</span> <span class="nav-text">登陆成功，此时查看python站点cookie记录的sessionId</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#登陆成功，此时查看python站点内容"><span class="nav-number">5.5.</span> <span class="nav-text">登陆成功，此时查看python站点内容</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#app-py-打印log"><span class="nav-number">5.6.</span> <span class="nav-text">app.py 打印log</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#六、不方便的地方"><span class="nav-number">6.</span> <span class="nav-text">六、不方便的地方</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy; 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">wumoumou</span>
+</div>
+
+
+<div class="powered-by">
+  由 <a class="theme-link" href="https://hexo.io">Hexo</a> 强力驱动
+</div>
+
+<div class="theme-info">
+  主题 -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Mist
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+    
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.0"></script>
+
+
+
+  
+
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+    <script type="text/javascript">
+      (function(d, s) {
+        var j, e = d.getElementsByTagName(s)[0];
+        if (typeof LivereTower === 'function') { return; }
+        j = d.createElement(s);
+        j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+        j.async = true;
+        e.parentNode.insertBefore(j, e);
+      })(document, 'script');
+    </script>
+  
+
+
+
+  
+  
+
+  
+
+  
+
+  
+  <script src="https://cdn1.lncld.net/static/js/av-core-mini-0.6.1.js"></script>
+  <script>AV.initialize("EkhHgB0P2QyORpnhhj6q1iLH-gzGzoHsz", "uXwWMFkHKfS7iI4xVcG7Dgr0");</script>
+  <script>
+    function showTime(Counter) {
+      var query = new AV.Query(Counter);
+      var entries = [];
+      var $visitors = $(".leancloud_visitors");
+
+      $visitors.each(function () {
+        entries.push( $(this).attr("id").trim() );
+      });
+
+      query.containedIn('url', entries);
+      query.find()
+        .done(function (results) {
+          var COUNT_CONTAINER_REF = '.leancloud-visitors-count';
+
+          if (results.length === 0) {
+            $visitors.find(COUNT_CONTAINER_REF).text(0);
+            return;
+          }
+
+          for (var i = 0; i < results.length; i++) {
+            var item = results[i];
+            var url = item.get('url');
+            var time = item.get('time');
+            var element = document.getElementById(url);
+
+            $(element).find(COUNT_CONTAINER_REF).text(time);
+          }
+          for(var i = 0; i < entries.length; i++) {
+            var url = entries[i];
+            var element = document.getElementById(url);
+            var countSpan = $(element).find(COUNT_CONTAINER_REF);
+            if( countSpan.text() == '') {
+              countSpan.text(0);
+            }
+          }
+        })
+        .fail(function (object, error) {
+          console.log("Error: " + error.code + " " + error.message);
+        });
+    }
+
+    function addCount(Counter) {
+      var $visitors = $(".leancloud_visitors");
+      var url = $visitors.attr('id').trim();
+      var title = $visitors.attr('data-flag-title').trim();
+      var query = new AV.Query(Counter);
+
+      query.equalTo("url", url);
+      query.find({
+        success: function(results) {
+          if (results.length > 0) {
+            var counter = results[0];
+            counter.fetchWhenSave(true);
+            counter.increment("time");
+            counter.save(null, {
+              success: function(counter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(counter.get('time'));
+              },
+              error: function(counter, error) {
+                console.log('Failed to save Visitor num, with error message: ' + error.message);
+              }
+            });
+          } else {
+            var newcounter = new Counter();
+            /* Set ACL */
+            var acl = new AV.ACL();
+            acl.setPublicReadAccess(true);
+            acl.setPublicWriteAccess(true);
+            newcounter.setACL(acl);
+            /* End Set ACL */
+            newcounter.set("title", title);
+            newcounter.set("url", url);
+            newcounter.set("time", 1);
+            newcounter.save(null, {
+              success: function(newcounter) {
+                var $element = $(document.getElementById(url));
+                $element.find('.leancloud-visitors-count').text(newcounter.get('time'));
+              },
+              error: function(newcounter, error) {
+                console.log('Failed to create');
+              }
+            });
+          }
+        },
+        error: function(error) {
+          console.log('Error:' + error.code + " " + error.message);
+        }
+      });
+    }
+
+    $(function() {
+      var Counter = AV.Object.extend("Counter");
+      if ($('.leancloud_visitors').length == 1) {
+        addCount(Counter);
+      } else if ($('.post-title-link').length > 1) {
+        showTime(Counter);
+      }
+    });
+  </script>
+
+
+
+  
+
+  
+
+
+  
+
+</body>
+</html>
